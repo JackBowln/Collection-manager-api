@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function showAllBooks()
     {
-        return response()->json(Book::all());
+        $book = Auth::user()->book()->get();
+        return response()->json(['status' => 'success','result' => $book]);
     }
 
     public function showOneBook($id)
@@ -23,7 +29,12 @@ class BookController extends Controller
         $this->validate($request, [
             'title' => 'required',
         ]);
-
+        if(Auth::user()->book()->Create($request->all())){
+            return response()->json(['status' => 'success']);
+        }else{
+            return response()->json(['status' => 'fail']);
+        }
+        
         $book = Book::create($request->all());
 
         return response()->json($book, 201);

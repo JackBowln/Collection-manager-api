@@ -13,7 +13,7 @@ class Book extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'author', 'subtitle', 'pages', 'genre', 'Publisher '
+        'title', 'author', 'subtitle', 'pages', 'genre', 'publisher', 'case', 'user_id'
     ];
 
     /**

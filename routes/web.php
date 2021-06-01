@@ -25,4 +25,16 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
   $router->delete('books/{id}', ['uses' => 'BookController@delete']);
 
   $router->put('books/{id}', ['uses' => 'BookController@update']);
+
+  $router->post('register', 'AuthController@register');
+
+  $router->post('login', 'AuthController@login');
+
+    $router->get('profile', 'UserController@profile');
+
+    // Matches "/v1/users/1 
+    $router->get('users/{id}', 'UserController@singleUser');
+
+    // Matches "/v1/users
+    $router->get('users', 'UserController@allUsers');
 });

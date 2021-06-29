@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Book;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Pagination;
 
 class BookController extends Controller
 {
@@ -13,9 +16,10 @@ class BookController extends Controller
         $this->middleware('auth');
     }
 
-    public function showAllBooks()
+    public function showAllBooks(Request $request)
     {
-        $book = Auth::user()->book()->get();
+        $per_page = $request->input('per_page');
+        $book = Auth::user()->book()->orderBy("created_at", "DESC")->paginate($per_page);
         return response()->json(['status' => 'success','result' => $book]);
     }
 
@@ -34,7 +38,7 @@ class BookController extends Controller
         }else{
             return response()->json(['status' => 'fail']);
         }
-        
+
         $book = Book::create($request->all());
 
         return response()->json($book, 201);

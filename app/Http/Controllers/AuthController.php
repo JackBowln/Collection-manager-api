@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
+
 
 class AuthController extends Controller
 {
@@ -35,17 +38,15 @@ class AuthController extends Controller
 
             //return successful response
             return response()->json(['user' => $user, 'message' => 'CREATED'], 201);
-
         } catch (\Exception $e) {
             //return error message
             return response()->json(['message' => 'User Registration Failed!'], 409);
         }
-
     }
 
     public function login(Request $request)
     {
-          //validate incoming request
+        //validate incoming request
         $this->validate($request, [
             'email' => 'required|string',
             'password' => 'required|string',
@@ -53,12 +54,43 @@ class AuthController extends Controller
 
         $credentials = $request->only(['email', 'password']);
 
-        if (! $token = Auth::attempt($credentials)) {
+        if (!$token = Auth::attempt($credentials)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+        $token = Auth::setTTL(87600)->attempt($credentials);
 
         return $this->respondWithToken($token);
     }
 
+    public function update(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'email|string',
+        ]);
+        $id = Auth::user()->id;
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
+        // $user->update($request->all());
+        return ['user' => $user];;
+    }
 
+    public function resetPassword(Request $request) {
+        $this->validate($request, [
+            'current_password' => 'required',
+            'new_password' => 'required',
+            'new_confirm_password' => 'required|same:new_password'
+        ]);
+        $id = Auth::user()->id;
+        $user = User::findOrFail($id);
+
+        if (Hash::check($request->current_password, $user->password)) {
+            $user->password = app('hash')->make($request->new_password);
+            $user->save();
+        } else {
+            return ['password' => 'Confirme sua senha corretamente'];
+        }
+        return ['user' => $user, 'password' => $user->password];;
+    }
 }

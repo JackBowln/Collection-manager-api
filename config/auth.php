@@ -12,7 +12,6 @@ return [
             'provider' => 'users',
         ],
     ],
-
     'providers' => [
         'users' => [
             'driver' => 'eloquent',

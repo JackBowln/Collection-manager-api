@@ -6,9 +6,13 @@
     "type": "project",
     "require": {
         "php": "^7.3|^8.0",
+        "doctrine/dbal": "^3.1",
+        "illuminate/mail": "^8.48",
+        "illuminate/notifications": "^8.48",
+        "laravel/jetstream": "^2.3",
         "laravel/lumen-framework": "^8.0",
         "laravelista/lumen-vendor-publish": "^8.0",
-        "tymon/jwt-auth": "^1.0.0-beta.3@dev"
+        "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

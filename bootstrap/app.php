@@ -35,7 +35,18 @@ $app->middleware([
 ]);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->configure('mail');
 
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
+
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
+$app->withFacades(true, [
+'Illuminate\Support\Facades\Notification' => 'Notification',
+]);
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
